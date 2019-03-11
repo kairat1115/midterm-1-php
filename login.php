@@ -52,7 +52,7 @@
 						<form method="post">
 							<div class="form-group">
 								<label for="inputEmail">Email address</label>
-								<input type="text" name="email" class="form-control" placeholder="Email address">
+								<input type="email" name="email" class="form-control" placeholder="Email address">
 							</div>
 							<div class="form-group">
 								<label for="inputPassword">Password</label>
