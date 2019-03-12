@@ -71,4 +71,11 @@
 		$query->execute(array('id'=>$id));
 		return $query->fetch();
 	}
+
+	function getAllTweetsAfterId($id) {
+		global $connection;
+		$query = $connection->prepare("SELECT tweets.id, tweets.tweet, tweets.post_date, tweets.user_id, users.full_name FROM tweets LEFT JOIN users ON tweets.user_id = users.id where tweets.id>:id");
+		$query->execute(array('id'=>$id));
+		return $query->fetchAll();
+	}
 ?>

@@ -24,27 +24,36 @@
 	<div class="container">
 		<div class="row mx-auto">
 			<div class="col-sm-2"></div>
-			<div class="col-sm-8">
-				<?php
-					$tweets = getAllTweetsFromAllUsers();
-					for ($i = 0; $i < sizeof($tweets); $i++) {
-				?>
-				<div class="card">
-				  <div class="card-body">
-				  	<h5 class="card-title"><?php echo $tweets[$i]['full_name'] ?></h5>
-				  	<h6 class="card-subtitle mb-2 text-muted"><?php echo $tweets[$i]['post_date'] ?></h6>
-				    <?php echo AbstractHTMLContents(htmlspecialchars_decode($tweets[$i]['tweet'])); ?>
-				    <a href="full_tweet.php?id=<?php echo $tweets[$i]['id']; ?>" class="card-link">full text</a>
-				    <?php
-				    	if ($user['id'] == $tweets[$i]['user_id']) {
-				    ?>
-				    <a href="edit.php?id=<?php echo $tweets[$i]['id']; ?>" class="card-link">edit tweet</a>
-					<?php } ?>
-				  </div>
-				</div>
-				<?php } ?>
+			<div class="col-sm-8" id="feed">
+				
 			</div>
 			<div class="col-sm-2"></div>
 		</div>
 	</div>
+	<script type="text/javascript">
+		var id = '0';
+		setInterval(function() {
+			$.get("get_new.php?id="+id, function (json) {
+				json = JSON.parse(json);
+				if (json.length > 0) {
+					id = json[json.length-1].id;
+					console.log(json);
+					for (var i = 0; i < json.length; i++) {
+						var text = `<div class="card">\
+							\t<div class="card-body">\
+							\t\t<h5 class="card-title">${json[i].full_name}</h5>\
+							\t\t<h6 class="card-subtitle mb-2 text-muted">${json[i].post_date}</h6>\
+							\t\t${json[i].tweet}\
+							\t\t<a href="full_tweet.php?id=${json[i].id}" class="card-link">full text</a>`;
+						if (json[i].user_id == "<?php echo $user['id'] ?>") {
+							text += `\t\t<a href="edit.php?id=${json[i].id}" class="card-link">edit tweet</a>`
+						}
+						text += `\t</div>\
+						</div>`;
+						$("#feed").prepend(text);
+					}
+				}
+			});
+		}, 1000);
+	</script>
 </body>
