@@ -3,7 +3,17 @@
 	session_start();
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		if (isset($_POST['email']) && isset($_POST['password'])) {
-			setcookie('creds', base64_encode($_POST['email'].':'.$_POST['password']), time() + 3600);
+			$_POST['remember'] = isset($_POST['remember']) ? 'on' : 'off';
+			if ($_POST['remember'] == 'on') {
+				setcookie('creds', base64_encode($_POST['email'].':'.$_POST['password']), time() + 3600);
+			}
+			if (getUserByEmailAndPassword($_POST['email'], $_POST['password'])) {
+				$_SESSION['email'] = $_POST['email'];
+				$_SESSION['pass'] = $_POST['password'];
+				$_SESSION['found'] = true;
+				header('Location: index.php');
+				die();
+			}
 		}
 		header('Location: login.php');
 		die();
@@ -60,6 +70,9 @@
 							</div>
 							<button type="submit" class="btn btn-primary">SIGN IN</button>
 							<a href="register.php" class="btn btn-secondary">REGISTER</a>
+							<div class="form-check form-check-inline">
+								Remeber me<input type="checkbox" class="form-check-input" name="remember">
+							</div>
 						</form>
 					</div>
 				</div>
